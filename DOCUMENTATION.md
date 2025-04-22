@@ -8,7 +8,7 @@ Bem-vindo à documentação central do projeto! Aqui você encontrará links par
 
 ## 🚀 Índice Rápido
 🔹 [API (api)](#-api)  
-🔹 [Aplicação Principal (app)](#-aplicação-principal)  
+🔹 [Aplicação Principal (app)](#-app)  
 
 ---
 
