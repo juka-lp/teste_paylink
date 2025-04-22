@@ -26,7 +26,7 @@ Seção dedicada à documentação das interfaces e integrações do sistema.
 
 ---
 
-### 🖥️ APP
+## 🖥️ APP
 Documentação dos módulos internos da aplicação principal.
 
 ### 🏗️ Estrutura Principal
