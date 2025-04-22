@@ -8,7 +8,7 @@ Bem-vindo à documentação central do projeto! Aqui você encontrará links par
 
 ## 🚀 Índice Rápido
 🔹 [API (api)](#-api)  
-🔹 [Aplicação Principal (app)](#%EF%B8%8F-aplicação-principal)  
+🔹 [Aplicação Principal (app)](#-app)  
 
 ---
 
@@ -26,8 +26,8 @@ Seção dedicada à documentação das interfaces e integrações do sistema.
 
 ---
 
-## 🖥️ Aplicação Principal
-Documentação dos módulos internos da aplicação.
+## 🖥️ APP
+Documentação dos módulos internos da aplicação principal.
 
 ### 🏗️ Estrutura Principal
 - 🏠 [Visão Geral do App](./docs/app/app.md)
