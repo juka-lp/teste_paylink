@@ -1,0 +1,80 @@
+name: Odoo Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Run Odoo Tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: "123"
+          POSTGRES_DB: project_ci_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      PGHOST: localhost
+      PGUSER: postgres
+      PGPASSWORD: "123"
+      VERSION: "11.0"
+      ODOO_BRANCH: "11.0"
+      ODOO_REPO: "odoo/odoo"
+      LINT_CHECK: "0"
+      TESTS: "1"
+      CODECOV_TOKEN: "afc5fdef-4024-4781-a0e6-f69100690fbb"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.8.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8.10'
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client expect-dev nodejs python3-dev python3-pip build-essential \
+            libsasl2-dev python-dev libldap2-dev libssl-dev libxml2-dev libxmlsec1-dev libxslt-dev
+          curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+
+      - name: Install Python dependencies
+        run: |
+          pip install coverage coveralls codecov
+          pip install -r requirements.txt
+
+      - name: Clone OCA maintainer-quality-tools
+        run: |
+          git clone https://github.com/OCA/maintainer-quality-tools.git -b master ${HOME}/maintainer-quality-tools
+
+      - name: Export OCA Tools Path
+        run: |
+          echo "${HOME}/maintainer-quality-tools/travis:${HOME}/gitlab_tools" >> $GITHUB_PATH
+
+      - name: Run Odoo Tests
+        run: |
+          travis_install_nightly
+          travis_run_tests
+          travis_after_tests_success || true
+
+      - name: Upload coverage to Codecov
+        if: success()
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
