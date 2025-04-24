@@ -1,0 +1,3 @@
+plotly==2.4.1
+numpy
+signxml==2.8.2
