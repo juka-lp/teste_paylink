@@ -52,12 +52,12 @@ jobs:
           sudo apt-get install -y postgresql-client expect-dev python3-dev python3-pip build-essential \
             libsasl2-dev libldap2-dev libssl-dev libxml2-dev libxmlsec1-dev libxslt-dev
           
-      # Adicione este passo para configurar Node.js moderno
+      # Configuração simplificada do Node.js sem cache
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20' # Use a versão LTS mais recente
-          cache: 'npm'
+          node-version: '20'
+          # Removida a configuração de cache já que não há package-lock.json
 
       - name: Install Python dependencies
         run: |
@@ -72,12 +72,14 @@ jobs:
         run: |
           echo "${HOME}/maintainer-quality-tools/travis:${HOME}/gitlab_tools" >> $GITHUB_PATH
           
-      - name: Run Odoo Tests
+      - name: Configure npm for local installation
         run: |
-          # Adicione --user para instalar como usuário local ou use sudo se necessário
           npm config set prefix ~/.npm-global
           echo "export PATH=~/.npm-global/bin:$PATH" >> ~/.bashrc
           source ~/.bashrc
+          
+      - name: Run Odoo Tests
+        run: |
           travis_install_nightly
           travis_run_tests
           travis_after_tests_success || true
