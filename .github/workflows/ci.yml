@@ -30,12 +30,12 @@ jobs:
       PGHOST: localhost
       PGUSER: postgres
       PGPASSWORD: "123"
-      VERSION: "11.0"
-      ODOO_BRANCH: "11.0"
+      VERSION: "15.0"
+      ODOO_BRANCH: "15.0"
       ODOO_REPO: "odoo/odoo"
       LINT_CHECK: "0"
       TESTS: "1"
-      CODECOV_TOKEN: "afc5fdef-4024-4781-a0e6-f69100690fbb"
+      CODECOV_TOKEN: "3e5036d1-b936-42c3-8599-fb5ceb73780a"
 
     steps:
       - name: Checkout code
