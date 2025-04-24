@@ -1,1 +1,0 @@
-# Arquivo teste_paylink
