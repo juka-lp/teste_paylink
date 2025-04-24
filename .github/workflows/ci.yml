@@ -52,7 +52,7 @@ jobs:
           sudo apt-get install -y postgresql-client expect-dev python3-dev python3-pip build-essential \
             libsasl2-dev libldap2-dev libssl-dev libxml2-dev libxmlsec1-dev libxslt-dev \
             libfontconfig1 libfreetype6 xvfb
-          
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -63,33 +63,33 @@ jobs:
           pip install --upgrade pip
           pip install coverage coveralls codecov six
           # pip install -r requirements.txt
-          
+
       - name: Clone OCA maintainer-quality-tools
         run: |
           git clone https://github.com/OCA/maintainer-quality-tools.git -b master ${HOME}/maintainer-quality-tools
-          
+
       - name: Export OCA Tools Path
         run: |
           echo "${HOME}/maintainer-quality-tools/travis:${HOME}/gitlab_tools" >> $GITHUB_PATH
-          
-      - name: Configure npm and install required packages
+
+      - name: Install PhantomJS properly
         run: |
-          npm config set prefix ~/.npm-global
-          echo "export PATH=~/.npm-global/bin:$PATH" >> ~/.bashrc
-          source ~/.bashrc
-          # Instala explicitamente o phantomjs-prebuilt com permissões
-          npm install -g phantomjs-prebuilt@2.1.16 --unsafe-perm
+          # Configuração definitiva do PhantomJS
+          export PHANTOMJS_CDNURL=https://bitbucket.org/ariya/phantomjs/downloads
+          npm install -g phantomjs-prebuilt@2.1.16 --unsafe-perm --prefix ~/.npm-global
+          echo "export PATH=$HOME/.npm-global/bin:$PATH" >> $HOME/.bashrc
+          source $HOME/.bashrc
           phantomjs --version
-          
+
       - name: Run Odoo Tests
         run: |
-          # Configura ambiente para testes
+          # Configura ambiente virtual para testes
           export DISPLAY=:99
           Xvfb :99 -screen 0 1024x768x16 &
-          travis_install_nightly || echo "Ignoring travis_install_nightly errors"
+          travis_install_nightly || echo "Ignoring travis_install_nightly warnings"
           travis_run_tests
           travis_after_tests_success || true
-          
+
       - name: Upload coverage to Codecov
         if: success()
         uses: codecov/codecov-action@v4
