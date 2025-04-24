@@ -25,7 +25,6 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
     env:
       PGHOST: localhost
       PGUSER: postgres
@@ -49,30 +48,40 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get remove -y nodejs libnode72  # 👈 remove os pacotes em conflito
-          curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-          sudo apt-get install -y postgresql-client expect-dev nodejs python3-dev python3-pip build-essential \
+          sudo apt-get remove -y nodejs libnode72
+          sudo apt-get install -y postgresql-client expect-dev python3-dev python3-pip build-essential \
             libsasl2-dev libldap2-dev libssl-dev libxml2-dev libxmlsec1-dev libxslt-dev
+          
+      # Adicione este passo para configurar Node.js moderno
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20' # Use a versão LTS mais recente
+          cache: 'npm'
 
       - name: Install Python dependencies
         run: |
           pip install coverage coveralls codecov
           # pip install -r requirements.txt
-
+          
       - name: Clone OCA maintainer-quality-tools
         run: |
           git clone https://github.com/OCA/maintainer-quality-tools.git -b master ${HOME}/maintainer-quality-tools
-
+          
       - name: Export OCA Tools Path
         run: |
           echo "${HOME}/maintainer-quality-tools/travis:${HOME}/gitlab_tools" >> $GITHUB_PATH
-
+          
       - name: Run Odoo Tests
         run: |
+          # Adicione --user para instalar como usuário local ou use sudo se necessário
+          npm config set prefix ~/.npm-global
+          echo "export PATH=~/.npm-global/bin:$PATH" >> ~/.bashrc
+          source ~/.bashrc
           travis_install_nightly
           travis_run_tests
           travis_after_tests_success || true
-
+          
       - name: Upload coverage to Codecov
         if: success()
         uses: codecov/codecov-action@v4
