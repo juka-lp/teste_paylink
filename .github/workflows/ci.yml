@@ -9,7 +9,7 @@ on:
 jobs:
   test:
     name: Run Odoo Tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     services:
       postgres:
@@ -41,10 +41,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Python 3.8.10
+      - name: Set up Python 3.8
         uses: actions/setup-python@v4
         with:
-          python-version: '3.8.10'
+          python-version: '3.8'
 
       - name: Install system dependencies
         run: |
